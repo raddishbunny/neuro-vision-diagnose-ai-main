@@ -1,0 +1,167 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NeuroVision Diagnose AI</title>
+    <meta name="description" content="AI-powered medical image analysis" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="header">
+        <div class="header-content">
+          <div class="logo-container">
+            <svg class="brain-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44A2.5 2.5 0 0 1 2 17.5v-15a2.5 2.5 0 0 1 5-.44A2.5 2.5 0 0 1 9.5 2Z"></path>
+              <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44A2.5 2.5 0 0 0 22 17.5v-15a2.5 2.5 0 0 0-5-.44A2.5 2.5 0 0 0 14.5 2Z"></path>
+            </svg>
+            <h1 class="header-title">NeuroVision Diagnose AI</h1>
+          </div>
+          <div class="project-label">University Project</div>
+        </div>
+      </header>
+      
+      <main class="container">
+        <div class="intro">
+          <h2 class="section-title">Medical Image Analysis</h2>
+          <p class="section-description">
+            Upload medical images to detect Malaria from blood smears or Pneumonia from chest X-rays.
+          </p>
+        </div>
+        
+        <div class="tabs">
+          <div class="tabs-list">
+            <button class="tab-button active" data-tab="malaria">Malaria Detection</button>
+            <button class="tab-button" data-tab="pneumonia">Pneumonia Detection</button>
+          </div>
+          
+          <div class="tab-content active" data-tab="malaria">
+            <div class="cards-container">
+              <div class="card upload-card">
+                <div class="card-header">
+                  <h3 class="card-title">Blood Smear Image</h3>
+                  <p class="card-description">Upload a microscopic blood smear image for malaria parasite detection</p>
+                </div>
+                <div class="card-content">
+                  <div class="upload-area" id="malaria-upload-area">
+                    <div class="upload-placeholder">
+                      <svg class="upload-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                      </svg>
+                      <p class="upload-text">Drag and drop or click to upload</p>
+                    </div>
+                    <img class="preview-image hidden" src="" alt="Preview">
+                  </div>
+                  <div class="upload-actions">
+                    <input type="file" id="malaria-file-input" class="file-input" accept="image/*">
+                    <button class="button" id="malaria-upload-button">Select Image</button>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="card result-card">
+                <div class="card-header">
+                  <h3 class="card-title">Malaria Detection</h3>
+                  <span class="result-status" id="malaria-status">Awaiting Analysis</span>
+                </div>
+                <div class="card-content">
+                  <div id="malaria-results-container" class="results-container">
+                    <div class="results-placeholder">
+                      <p>Upload an image to see results</p>
+                    </div>
+                    <div class="results-data hidden">
+                      <div class="confidence-container">
+                        <div class="confidence-header">
+                          <span>Confidence</span>
+                          <span class="confidence-value" id="malaria-confidence">0%</span>
+                        </div>
+                        <div class="progress-bar">
+                          <div class="progress-fill" id="malaria-progress" style="width: 0%"></div>
+                        </div>
+                      </div>
+                      <div class="gradcam-container">
+                        <h4 class="gradcam-title">Model Focus Areas (Grad-CAM)</h4>
+                        <div class="gradcam-image-container">
+                          <img id="malaria-gradcam" class="gradcam-image" src="" alt="Grad-CAM Visualization">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="tab-content" data-tab="pneumonia">
+            <div class="cards-container">
+              <div class="card upload-card">
+                <div class="card-header">
+                  <h3 class="card-title">Chest X-Ray Image</h3>
+                  <p class="card-description">Upload a chest X-ray image for pneumonia detection</p>
+                </div>
+                <div class="card-content">
+                  <div class="upload-area" id="pneumonia-upload-area">
+                    <div class="upload-placeholder">
+                      <svg class="upload-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                      </svg>
+                      <p class="upload-text">Drag and drop or click to upload</p>
+                    </div>
+                    <img class="preview-image hidden" src="" alt="Preview">
+                  </div>
+                  <div class="upload-actions">
+                    <input type="file" id="pneumonia-file-input" class="file-input" accept="image/*">
+                    <button class="button" id="pneumonia-upload-button">Select Image</button>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="card result-card">
+                <div class="card-header">
+                  <h3 class="card-title">Pneumonia Detection</h3>
+                  <span class="result-status" id="pneumonia-status">Awaiting Analysis</span>
+                </div>
+                <div class="card-content">
+                  <div id="pneumonia-results-container" class="results-container">
+                    <div class="results-placeholder">
+                      <p>Upload an image to see results</p>
+                    </div>
+                    <div class="results-data hidden">
+                      <div class="confidence-container">
+                        <div class="confidence-header">
+                          <span>Confidence</span>
+                          <span class="confidence-value" id="pneumonia-confidence">0%</span>
+                        </div>
+                        <div class="progress-bar">
+                          <div class="progress-fill" id="pneumonia-progress" style="width: 0%"></div>
+                        </div>
+                      </div>
+                      <div class="gradcam-container">
+                        <h4 class="gradcam-title">Model Focus Areas (Grad-CAM)</h4>
+                        <div class="gradcam-image-container">
+                          <img id="pneumonia-gradcam" class="gradcam-image" src="" alt="Grad-CAM Visualization">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <div id="toast-container" class="toast-container"></div>
+    </div>
+    
+    <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
+    <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
+    <script src="scripts.js" type="module"></script>
+  </body>
+</html>
