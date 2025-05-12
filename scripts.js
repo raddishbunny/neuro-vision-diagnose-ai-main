@@ -339,7 +339,7 @@ function showToast(title, message, type = 'default') {
     <button class="toast-close">×</button>
   `;
   
-  // Add to container
+  // Add to 
   toastContainer.appendChild(toast);
   
   // Setup close button
