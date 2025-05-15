@@ -1,4 +1,3 @@
-
 // Define type interfaces (using JSDoc for TypeScript-like typing in JavaScript)
 
 /**
@@ -224,7 +223,7 @@ function switchTab(tab) {
 }
 
 /**
- * Process the uploaded image with AI
+ * Process the uploaded image with AI backend
  * @param {File} file 
  * @param {DiseaseType} diseaseType 
  */
@@ -238,15 +237,40 @@ async function processImage(file, diseaseType) {
   );
   
   try {
-    // In a real app, we would send the image to a server
-    // Here we'll simulate the AI prediction
-    const result = await simulatePrediction(file, diseaseType);
-    
+    // Prepare form data
+    const formData = new FormData();
+    formData.append('file', file);
+
+    // Send image to backend API
+    const response = await fetch('http://localhost:5000/predict', {
+      method: 'POST',
+      body: formData
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to get prediction from server');
+    }
+
+    const data = await response.json();
+
+    // Expected backend JSON format:
+    // {
+    //   disease: "malaria" or "pneumonia",
+    //   result: "positive" or "negative",
+    //   confidence: number (0-100),
+    //   gradCamUrl: string (URL or base64 of gradcam image)
+    // }
+
     // Update the state with the result
-    state.results[diseaseType] = result;
+    state.results[diseaseType] = {
+      disease: data.disease || diseaseType,
+      result: data.result,
+      confidence: data.confidence,
+      gradCamUrl: data.gradCamUrl || ''
+    };
     
     // Update UI with results
-    updateResultsUI(diseaseType, result);
+    updateResultsUI(diseaseType, state.results[diseaseType]);
     
     // Show completion toast
     showToast(
@@ -259,36 +283,6 @@ async function processImage(file, diseaseType) {
   } finally {
     state.isProcessing = false;
   }
-}
-
-/**
- * Simulate AI prediction (mock service)
- * @param {File} file 
- * @param {DiseaseType} diseaseType 
- * @returns {Promise<PredictionResult>}
- */
-function simulatePrediction(file, diseaseType) {
-  return new Promise((resolve) => {
-    // Simulate processing delay
-    setTimeout(() => {
-      // Generate random result (positive/negative)
-      const isPositive = Math.random() > 0.5;
-      const result = /** @type {ResultType} */ (isPositive ? 'positive' : 'negative');
-      
-      // Generate random confidence between 65% and 98%
-      const confidence = Math.round(65 + Math.random() * 33);
-      
-      // Select appropriate Grad-CAM image
-      const gradCamUrl = `/${diseaseType}_${result}_gradcam.png`;
-      
-      resolve({
-        disease: diseaseType,
-        result,
-        confidence,
-        gradCamUrl,
-      });
-    }, 1500); // Simulate 1.5 second processing time
-  });
 }
 
 /**
@@ -313,8 +307,13 @@ function updateResultsUI(diseaseType, result) {
   // Update progress bar
   progressElements[diseaseType].style.width = `${result.confidence}%`;
   
-  // Update Grad-CAM image
-  gradCamImages[diseaseType].src = result.gradCamUrl;
+  // Update Grad-CAM image if available
+  if (result.gradCamUrl) {
+    gradCamImages[diseaseType].src = result.gradCamUrl;
+    gradCamImages[diseaseType].classList.remove('hidden');
+  } else {
+    gradCamImages[diseaseType].classList.add('hidden');
+  }
   
   // Show results data, hide placeholder
   resultsContainers[diseaseType].placeholder.classList.add('hidden');
@@ -336,10 +335,10 @@ function showToast(title, message, type = 'default') {
       <div class="toast-title">${title}</div>
       <div class="toast-description">${message}</div>
     </div>
-    <button class="toast-close">×</button>
+    <button class="toast-close">x</button>
   `;
   
-  // Add to 
+  // Add to toast container
   toastContainer.appendChild(toast);
   
   // Setup close button
@@ -350,19 +349,10 @@ function showToast(title, message, type = 'default') {
       toast.remove();
     }, 300);
   });
-  
-  // Auto remove after 5 seconds
-  setTimeout(() => {
-    if (toast.parentNode) {
-      toast.style.animation = 'slideOut 0.3s ease forwards';
-      setTimeout(() => {
-        if (toast.parentNode) {
-          toast.remove();
-        }
-      }, 300);
-    }
-  }, 5000);
 }
+  // Auto remove after 5 seconds
+document.addEventListener('DOMContentLoaded', () => {
+  initializeEventListeners();
+  switchTab(state.activeTab);
+});
 
-// Initialize the application
-document.addEventListener('DOMContentLoaded', initializeEventListeners);
